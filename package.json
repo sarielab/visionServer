@@ -1,0 +1,14 @@
+{
+  "name": "visionserver",
+  "version": "1.0.0",
+  "description": "visionserver",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha --timeout 25000",
+    "start": "nodemon app.js"
+  },
+  "author": "sarielab <poppymighty@gmail.com> (https://github.com/sarielab/)",
+  "license": "ISC",
+  "dependencies": {
+  }
+}
