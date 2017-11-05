@@ -3,8 +3,7 @@ const Schema = mongoose.Schema
 
 let eventSchema = new Schema({
   image: {
-    icon: String,
-    big: String,
+    standard: String,
     vr: [String]
   },
   tipe: {
@@ -14,15 +13,21 @@ let eventSchema = new Schema({
       message: `{PATH} should be [Hackathon | Meetup]`
     }
   },
-  participant: [{type: Schema.Types.ObjectId, ref: 'User'}],
-  _organizer: {type: Schema.Types.ObjectId, ref: 'User'},
+  location: {
+    lat: string,
+    lng: string,
+    name: string
+  },
   url: String,
-  approved: {type: Boolean, default: false}
   date: {
     join_start: Date,
     join_end: Date,
     event: Date
-  }
+  },
+  poin: {type: Number, default: 0},
+  participant: [{type: Schema.Types.ObjectId, ref: 'User'}],
+  _organizer: {type: Schema.Types.ObjectId, ref: 'User'},
+  approved: {type: Boolean, default: false}
 })
 
 let Event = mongoose.model('Event', eventSchema)

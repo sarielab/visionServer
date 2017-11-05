@@ -5,10 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --timeout 25000",
-    "start": "nodemon app.js"
+    "start": "NODE_ENV=dev nodemon app.js"
   },
   "author": "sarielab <poppymighty@gmail.com> (https://github.com/sarielab/)",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.11.7",
+    "mongoose": "^4.12.6"
   }
 }
