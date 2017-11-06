@@ -49,8 +49,6 @@ const UserType = new GraphQLObjectType({
   name: 'UserType',
   fields: {
     _id: {type: GraphQLID},
-    fb_name: {type: GraphQLString},
-    fb_photo: {type: GraphQLString},
     poin: {type: GraphQLInt},
     descr: {type: GraphQLString},
     achievementHistories: achievementHistories,
@@ -146,14 +144,9 @@ const createUser = {
     if (typeof input.fb_name !== 'undefined') facebook.name = input.fb_name
     if (typeof input.fb_photo !== 'undefined') facebook.photo = input.fb_photo
     if (typeof input.github_user !== 'undefined') github.user = input.github_user
-    // if (typeof input.github_repo_name !== 'undefined') github_repo.name = input.github_repo_name
-    // if (typeof input.github_repo_url !== 'undefined') github_repo.url = input.github_repo_url
-    // if (typeof input.github_repo_createdDate !== 'undefined') github_repo.cr = input.github_repo_createdDate
-    // if (typeof input.github_repo_pushDate !== 'undefined') github_repo.push = input.github_repo_pushDate
     if (typeof input.descr !== 'undefined') user_dt.descr = input.descr
     if (typeof input.poin !== 'undefined') user_dt.poin = input.poin
     if (Object.keys(facebook).length > 0) user_dt.facebook = facebook
-    // if (Object.keys(github_repo).length > 0) github.repository = github_repo
     if (Object.keys(github).length > 0) user_dt.github = github
 
     let n_user = new User(user_dt)
@@ -264,5 +257,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  updatePoinHistory
+  updatePoinHistory,
+  GithubRepositoryType
 }
