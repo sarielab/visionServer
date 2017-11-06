@@ -31,7 +31,8 @@ let userSchema = new Schema({
         createdDate: {type: Date, default: Date.now},
         pushDate: {type: Date, default: Date.now}
       }
-    ]
+    ],
+    count: {type: Number, default: 0}
   },
   descr: String,
   poin: {type: Number, default: 0},
