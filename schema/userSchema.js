@@ -85,11 +85,10 @@ const users= {
   resolve: (root,args) => new Promise((resolve, reject)=> {
     let search = {}
     if (typeof args.role !== 'undefined') search.role = args.role
-
-    User.find(search,(err, users) => {
-      console.log('done get')
-      err? reject(err) : resolve(users)
-    })
+    User.find(
+      search, 
+      (err, users) => err? reject(err) : resolve(users)
+    )
   })
 }
 
@@ -99,16 +98,7 @@ const user= {
     id: {name:'id', type: GraphQLID}
   },
   resolve: (root, args) => new Promise((resolve, reject)=> {
-    User.findById(args.id,(err, user) => {
-      if (err) {
-        reject(err)
-      } else {
-        // let achievements = User.findAchievementHistories(args._id)
-        // console.log(achievements)
-        // user.achievementHistories = achievements
-        resolve(user)
-      }
-    })
+    User.findById(args.id,(err, user) => err ? reject(err) : resolve(user) )
   })
 }
 

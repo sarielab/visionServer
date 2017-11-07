@@ -41,7 +41,8 @@ let userSchema = new Schema({
   join_meetup: {type: Number, default: 0},
   join_hackathon: {type: Number, default: 0},
   createdDate: {type: Date, default: Date.now},
-  role: {type:String, default:"member"}
+  role: {type:String, default:"member"},
+  phone: {type:String}
 })
 //
 // userSchema.statics.findAchievementHistories = function(id) {

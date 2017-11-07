@@ -33,7 +33,7 @@ const createJOB = (jobname,priority='low') => {
 //hardcode tanggal
 //jam cron belum seragam
 const insertGithub = () => {
-  let blastEvent = new cronJob('* * 18 * * *' ,
+  let blastEvent = new cronJob('* * 19 0 0 *' ,
     function() {
       query(`
         {
@@ -69,12 +69,12 @@ const insertGithub = () => {
 }
 // pas join date start
 const blastEvent = () => {
-  let blastEvent = new cronJob('* * 22 0 * *' ,
+  let blastEvent = new cronJob('* * 19 0 0 *' ,
     function() {
       //cari event
       let currDate = new Date()
-      // let date_format = `${currDate.getFullYear()}-${currDate.getMonth()}-`+ `0${currDate.getDay()}`.substr(-2)
-      let date_format = '2017-10-01'
+      let date_format = `${currDate.getFullYear()}-${currDate.getMonth()}-`+ `0${currDate.getDay()}`.substr(-2)
+      // let date_format = '2017-10-01'
       query(`
         {
           users {
@@ -128,12 +128,12 @@ const blastEvent = () => {
 }
 // pas hari event
 const remindEvent = () => {
-  let remindEvent = new cronJob('* * 18 * * *' ,
+  let remindEvent = new cronJob('* * 19 0 0 *' ,
     function() {
       //cari event
       let currDate = new Date()
-      // let date_format = `${currDate.getFullYear()}-${currDate.getMonth()}-`+ `0${currDate.getDay()}`.substr(-2)
-      let date_format = '2017-11-10'
+      let date_format = `${currDate.getFullYear()}-${currDate.getMonth()}-`+ `0${currDate.getDay()}`.substr(-2)
+      // let date_format = '2017-11-10'
       query(`
         {
           events(date_event:"${date_format}"){
@@ -180,7 +180,7 @@ const remindEvent = () => {
   )
 }
 const approvalEvent = () => {
-  let approvalEvent = new cronJob('* * 19 * * *' ,
+  let approvalEvent = new cronJob('* * 19 0 0 *' ,
     function() {
       query(`
         {
@@ -215,7 +215,7 @@ const approvalEvent = () => {
 }
 
 const createAchievementHistory = () => {
-  let createAchievementHistory = new cronJob('* * 21 * * *' ,
+  let createAchievementHistory = new cronJob('* * 19 0 0 *' ,
     function() {
       query(`
         {
@@ -299,9 +299,9 @@ const sendSMS = (phone, content) => {
 
 const init = () => {
   blastEvent()
-  // remindEvent()
-  // insertGithub()
-  // approvalEvent()
+  remindEvent()
+  insertGithub()
+  approvalEvent()
   createAchievementHistory()
 }
 

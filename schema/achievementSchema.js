@@ -76,8 +76,6 @@ const createAchievement = {
       image: input.image
     })
     n_achievement.save((err, s_achievement) =>{
-      console.log(err)
-      console.log(s_achievement)
        err? reject(err.errors) : resolve(s_achievement)
      })
   })

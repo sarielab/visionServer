@@ -22,7 +22,7 @@ const EventType = new GraphQLObjectType({
     _id: {type: GraphQLID},
     name: {type:GraphQLString},
     descr: {type:GraphQLString},
-    poin: {type: GraphQLInt},
+    // poin: {type: GraphQLInt},
     tipe: {type: GraphQLString},
     image: {
       type: new GraphQLObjectType({
@@ -56,13 +56,13 @@ const EventType = new GraphQLObjectType({
     },
     participant: users,
     _organizer: {type: GraphQLString},
-    approved: {type: GraphQLBoolean}
+    approved: {type: GraphQLInt}
   }
 })
 const EventInputType = new GraphQLInputObjectType({
   name: 'EventInputType',
   fields: {
-    poin: {type: GraphQLInt},
+    // poin: {type: GraphQLInt},
     tipe: {type: GraphQLString},
     name: {type: GraphQLString},
     descr: {type: GraphQLString},
@@ -92,14 +92,12 @@ const events =  {
     let {date_start, date_event, approved} = args
     let search = {}
 
-    search.approved = (typeof approved != 'undefined') ?  approved : 1
-
+    // search.approved = (typeof approved != 'undefined') ?  approved : 1
+    if(typeof approved !== 'undefined') search.approved =  approved
     if(typeof date_start !== 'undefined') search['date.join_start'] =  {$eq: date_start }
     if(typeof date_event !== 'undefined') search['date.event'] =  {$eq: date_event }
 
-    Event.find(search,(err, events) => {
-      err? reject(err) : resolve(events)
-    })
+    Event.find(search,(err, events) => err? reject(err) : resolve(events) )
   })
 }
 const event= {
@@ -129,7 +127,7 @@ const createEvent = {
     let location = {}
     let date = {}
 
-    if (typeof input.poin !== 'undefined') event_dt.poin = input.poin
+    // if (typeof input.poin !== 'undefined') event_dt.poin = input.poin
     if (typeof input.descr !== 'undefined') event_dt.descr = input.descr
     if (typeof input.tipe !== 'undefined') event_dt.tipe = input.tipe
     if (typeof input.name !== 'undefined') event_dt.name = input.name
@@ -251,7 +249,8 @@ const updateEvent = {
         let location = {}
         let date = {}
 
-        if (typeof input.poin !== 'undefined') f_event.poin = input.poin
+        // if (typeof input.poin !== 'undefined') f_event.poin = input.poin
+        if (typeof input.descr !== 'undefined') f_event.descr = input.descr
         if (typeof input.tipe !== 'undefined') f_event.tipe = input.tipe
         if (typeof input.name !== 'undefined') f_event.name = input.name
         if (typeof input.image_standard !== 'undefined') image.standard = input.image_standard
