@@ -4,13 +4,13 @@ const https = require('https')
 const nodemailer = require('nodemailer')
 const cronJob = require('cron').CronJob
 const kue = require('kue')
-const queue = kue.createQueue()
-
-
 const {graphql} = require('graphql')
 const appSchema = require('../schema/schema')
-const query = str => {return graphql(appSchema, str) }
+const {sendMessage} = require('../mainAPI/main')
 
+const queue = kue.createQueue()
+
+const query = str => {return graphql(appSchema, str) }
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
@@ -29,7 +29,9 @@ const createJOB = (jobname,priority='low') => {
   job.on('complete', res => console.log(`complete\n${res}`))
   job.on('failed', err => console.log(err) );
 }
-
+//taredit
+//hardcode tanggal
+//jam cron belum seragam
 const insertGithub = () => {
   let blastEvent = new cronJob('* * 18 * * *' ,
     function() {
@@ -65,12 +67,9 @@ const insertGithub = () => {
     'Asia/Jakarta' /*timeZone*/
   )
 }
-// const checkAchievementJOB = () => {}
-// const requestEventJOB = () => {}
-
 // pas join date start
 const blastEvent = () => {
-  let blastEvent = new cronJob('* * 17 * * *' ,
+  let blastEvent = new cronJob('* * 22 0 * *' ,
     function() {
       //cari event
       let currDate = new Date()
@@ -80,6 +79,7 @@ const blastEvent = () => {
         {
           users {
             email
+            phone
           }
           events(date_start:"${date_format}"){
             tipe
@@ -92,10 +92,10 @@ const blastEvent = () => {
           }
         }
       `).then(response => {
-        console.log()
         if (typeof response.data !== 'undefined') {
           let events = response.data.events
           let users = response.data.users.map(user => user.email).join(',')
+          let userphone = response.data.users.filter((v,i,a)=> v.phone !== null && a.indexOf(v) === i).map(user => user.phone)
           events.forEach(event => {
             // cari user
             let mailOptions = {
@@ -106,12 +106,17 @@ const blastEvent = () => {
               html: `Hi Coders!<br/><br/>Join us at ${event.name} ${event.tipe} on ${event.date.event}. Registration will be start on ${event.date.join_start} till ${event.date.join}.<br/>` // html body
             }
             sendEmail(mailOptions)
-            // sendSMS(smsOptions)
+            let smsContent = `Hi Coders! Join us at ${event.name} ${event.tipe}`
+
+            userphone.forEach(phone => {
+              sendSMS(phone, smsContent)
+            })
           })
         }
         else if (typeof response.errors !== 'undefined') console.log(err)
         else console.log('ga usah ngide, ga ada data')
       }).catch(err => {console.log('mamam tuh error'); console.log(err)})
+      console.log('WTF')
       //taredit
       //komen karena kita ga mau dia stop
       this.stop()
@@ -121,6 +126,7 @@ const blastEvent = () => {
     'Asia/Jakarta' /*timeZone*/
   )
 }
+// pas hari event
 const remindEvent = () => {
   let remindEvent = new cronJob('* * 18 * * *' ,
     function() {
@@ -258,14 +264,9 @@ const createAchievementHistory = () => {
                     else console.log(response2.data)
                   })
                 }
-
-
-
               }
-
             })
           })
-
         }
         else if (typeof response.errors !== 'undefined') console.log(response.errors)
         else console.log('ga usah ngide, ga ada data')
@@ -289,8 +290,15 @@ const sendEmail = (mailOptions) => {
   })
 }
 
+const sendSMS = (phone, content) => {
+  createJOB('SMS','critical')
+  queue.process('SMS',(job,done)=>{
+    sendMessage(phone,content, done)
+  })
+}
+
 const init = () => {
-  // blastEvent()
+  blastEvent()
   // remindEvent()
   // insertGithub()
   // approvalEvent()

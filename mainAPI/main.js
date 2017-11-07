@@ -28,9 +28,8 @@ const getToken = () => {
   })
 }
 
-const sendMessage = async (phone, content) => {
+const sendMessage = async (phone, content, done) => {
     let res = await getToken()
-
     let message = {
       method: 'POST',
       url: 'https://api.mainapi.net/smsnotification/1.0.0/messages',
@@ -48,19 +47,18 @@ const sendMessage = async (phone, content) => {
       }
     }
 
-    console.log(message)
-
     await request(message, function (error, response, body) {
       body = JSON.parse(body)
       if (body.status !== 'success') console.log('fail to send message')
     })
+
+    done()
 
 }
 
 const getWifi = async (radius,lat,lon) => {
   try {
     let res = await getToken()
-    console.log('autho 1',res)
     let wifi = {
       method: 'GET',
       url: 'https://api.mainapi.net/wifi.id-locator/0.0.1/%2A',
@@ -82,7 +80,7 @@ const getWifi = async (radius,lat,lon) => {
   } catch(ex) {console.log('tes');console.log(ex)}
 }
 
-init()
+// init()
 module.exports = {
   getWifi,
   sendMessage

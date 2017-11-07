@@ -12,6 +12,7 @@ const {
 
 const {User,AchievementHistory} = require('../models/user')
 const Poin = require('../models/poin')
+const Achievement = require('../models/achievement')
 const PoinHistory = require('../models/poinHistory')
 const Reward = require('../models/reward')
 const {achievementHistories, AchievementHistoryType, AchievementHistoryInputType} = require('./user/achievementHistorySchema')
@@ -34,6 +35,7 @@ const UserType = new GraphQLObjectType({
     poin: {type: GraphQLInt},
     descr: {type: GraphQLString},
     email: {type: GraphQLString},
+    phone: {type: GraphQLString},
     role: {type: GraphQLString},
     achievementHistories: achievementHistories,
     github: {
@@ -66,6 +68,7 @@ const UserInputType = new GraphQLInputObjectType({
     _id: {type: GraphQLID},
     fb_name: {type: GraphQLString},
     fb_photo: {type: GraphQLString},
+    phone: {type: GraphQLString},
     poin: {type: GraphQLInt},
     descr: {type: GraphQLString},
     email: {type: GraphQLString},
@@ -127,6 +130,7 @@ const createUser = {
     if (typeof input.fb_photo !== 'undefined') facebook.photo = input.fb_photo
     if (typeof input.github_user !== 'undefined') github.user = input.github_user
     if (typeof input.descr !== 'undefined') user_dt.descr = input.descr
+    if (typeof input.phone !== 'undefined') user_dt.phone = input.phone
     if (typeof input.email !== 'undefined') user_dt.email = input.email
     if (typeof input.role !== 'undefined') user_dt.role = input.role
     if (typeof input.poin !== 'undefined') user_dt.poin = input.poin
@@ -162,6 +166,7 @@ const updateUser = {
         if (typeof input.fb_photo !== 'undefined') facebook.photo = input.fb_photo
         if (typeof input.github_user !== 'undefined') github.user = input.github_user
         if (typeof input.descr !== 'undefined') user.descr = input.descr
+        if (typeof input.phone !== 'undefined') user.phone = input.phone
         if (typeof input.email !== 'undefined') user.email = input.email
         if (typeof input.role !== 'undefined') user.role = input.role
         if (typeof input.poin !== 'undefined') user.poin = input.poin
