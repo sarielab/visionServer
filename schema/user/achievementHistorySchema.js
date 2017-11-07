@@ -34,11 +34,13 @@ const achievementHistories= {
     id: {name:'id', type: GraphQLID}
   },
   resolve: (root, args) => new Promise((resolve, reject)=> {
-    if (typeof args.id !== 'undefined')
-      AchievementHistory.findById(args.id,(err, achievementHistories) => {
-        err? reject(err) : resolve(achievementHistories)
-      })
-    else resolve({})
+    let search = {}
+    if (typeof args.id !== 'undefined') search._user = args.id
+    if (typeof root.id !== 'undefined') search._user = root.id
+
+    AchievementHistory.find(search,(err, achievementHistories) => {
+      err? reject(err) : resolve(achievementHistories)
+    })
 
   })
 }
@@ -55,6 +57,8 @@ const achievementHistory= {
   })
 }
 
+//gbs mutation dalam mutation FAK :D
+//ga kepake dulu
 const createAchievementHistory = {
   type: AchievementHistoryType,
   args: {
@@ -105,8 +109,7 @@ const deleteAchievementHistory = {
     const {id} = args
     AchievementHistory.findById(id, (err, achievementHistory) => {
       if (err) reject(err)
-      else
-        achievementHistory.remove((err, d_achievementHistory)=> err? reject(err) : resolve(d_achievementHistory) )
+      else achievementHistory.remove((err, d_achievementHistory)=> err? reject(err) : resolve(d_achievementHistory) )
     })
   })
 }

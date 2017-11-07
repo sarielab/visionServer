@@ -1,6 +1,5 @@
 require('dotenv').config()
 
-const appSchema = require('./schema/schema')
 const app = require('express')()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
@@ -8,6 +7,8 @@ const cors = require('cors')
 const graphQLHTTP = require('express-graphql')
 const { buildSchema } = require('graphql')
 
+const appSchema = require('./schema/schema')
+const cron = require('./cron/index')
 const port = process.env.PORT || 3000
 
 app.use(bodyParser.json())
@@ -16,8 +17,10 @@ app.use(cors())
 
 app.use('/graphql', graphQLHTTP (req => ({
   schema: appSchema,
-  graphiql:true
+  graphiql: true
 })))
+
+app.use('/cron', cron.init)
 
 let env = app.settings.env || 'dev'
 

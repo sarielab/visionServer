@@ -82,6 +82,7 @@ const getWifi = async (radius,lat,lon) => {
   } catch(ex) {console.log('tes');console.log(ex)}
 }
 
+init()
 module.exports = {
   getWifi,
   sendMessage

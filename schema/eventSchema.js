@@ -11,10 +11,10 @@ const {
 } = require('graphql')
 
 const {User} = require('../models/user')
-const appSchema = require('./schema')
 const PoinHistory = require('../models/poinHistory')
 const Poin = require('../models/poin')
 const Event = require('../models/event')
+const {users} = require('./userSchema')
 
 const EventType = new GraphQLObjectType({
   name: 'EventType',
@@ -54,7 +54,7 @@ const EventType = new GraphQLObjectType({
         }
       })
     },
-    participant: {type: new GraphQLList(GraphQLString)},
+    participant: users,
     _organizer: {type: GraphQLString},
     approved: {type: GraphQLBoolean}
   }
@@ -84,11 +84,19 @@ const EventInputType = new GraphQLInputObjectType({
 const events =  {
   type: new GraphQLList(EventType),
   args: {
-    approved: {name:'approved', type:GraphQLInt}
+    approved: {name:'approved', type:GraphQLInt},
+    date_start: {name:'date_start', type:GraphQLString},
+    date_event: {name:'date_event', type:GraphQLString},
   },
   resolve: (root,args) => new Promise((resolve, reject)=> {
+    let {date_start, date_event, approved} = args
     let search = {}
-    if (typeof args.approved != 'undefined') search = {approved: args.approved}
+
+    search.approved = (typeof approved != 'undefined') ?  approved : 1
+
+    if(typeof date_start !== 'undefined') search['date.join_start'] =  {$eq: date_start }
+    if(typeof date_event !== 'undefined') search['date.event'] =  {$eq: date_event }
+
     Event.find(search,(err, events) => {
       err? reject(err) : resolve(events)
     })
@@ -188,7 +196,6 @@ const joinEvent = {
           else {
             //taredit
             //trus nanti malam si cron ngecek deh
-            //buat tambahin di achievement
             User.findById(participant, async (err,user) => {
               if (err) reject(err)
               else {
@@ -200,6 +207,7 @@ const joinEvent = {
                       let ph_dt = {}
 
                       user.descr = `Attend ${event.name} (${event.tipe} )`
+                      user[`join_${event.tipe}`] += 1
                       user.poin = user.poin + i_poin
                       ph_dt._user = user._id
                       ph_dt.tag = "add"
@@ -207,7 +215,6 @@ const joinEvent = {
                       ph_dt.poin = i_poin
 
                       let ph = new PoinHistory(ph_dt)
-                      console.log(ph_dt)
 
                       ph.save((err, s_ph) => err? console.log(err.errors) : console.log(s_ph))
 

@@ -21,7 +21,8 @@ const GithubRepositoryType = new GraphQLObjectType({
   name: "GithubRepositoryType",
   fields: {
     name: {type: GraphQLString},
-    url: {type: GraphQLString}
+    url: {type: GraphQLString},
+    count: {type: GraphQLInt}
   }
 })
 
@@ -32,6 +33,7 @@ const UserType = new GraphQLObjectType({
     event: {type: new GraphQLList(GraphQLID) },
     poin: {type: GraphQLInt},
     descr: {type: GraphQLString},
+    email: {type: GraphQLString},
     role: {type: GraphQLString},
     achievementHistories: achievementHistories,
     github: {
@@ -52,7 +54,9 @@ const UserType = new GraphQLObjectType({
           photo: {type: GraphQLString}
         }
       })
-    }
+    },
+    join_meetup: {type: GraphQLInt},
+    join_hackathon: {type: GraphQLInt},
   },
 })
 
@@ -64,6 +68,7 @@ const UserInputType = new GraphQLInputObjectType({
     fb_photo: {type: GraphQLString},
     poin: {type: GraphQLInt},
     descr: {type: GraphQLString},
+    email: {type: GraphQLString},
     role: {type: GraphQLString},
     github_user: {type: GraphQLString},
   },
@@ -71,8 +76,17 @@ const UserInputType = new GraphQLInputObjectType({
 
 const users= {
   type: new GraphQLList(UserType),
-  resolve: (root) => new Promise((resolve, reject)=> {
-    User.find((err, users) => err? reject(err) : resolve(users))
+  args: {
+    role: {name:'role', type: GraphQLString}
+  },
+  resolve: (root,args) => new Promise((resolve, reject)=> {
+    let search = {}
+    if (typeof args.role !== 'undefined') search.role = args.role
+
+    User.find(search,(err, users) => {
+      console.log('done get')
+      err? reject(err) : resolve(users)
+    })
   })
 }
 
@@ -84,11 +98,11 @@ const user= {
   resolve: (root, args) => new Promise((resolve, reject)=> {
     User.findById(args.id,(err, user) => {
       if (err) {
-        console.log('err find by id')
         reject(err)
       } else {
-        let achievements = User.findAchievementHistories(args._id)
-        user.achievementHistories = achievements
+        // let achievements = User.findAchievementHistories(args._id)
+        // console.log(achievements)
+        // user.achievementHistories = achievements
         resolve(user)
       }
     })
@@ -113,6 +127,7 @@ const createUser = {
     if (typeof input.fb_photo !== 'undefined') facebook.photo = input.fb_photo
     if (typeof input.github_user !== 'undefined') github.user = input.github_user
     if (typeof input.descr !== 'undefined') user_dt.descr = input.descr
+    if (typeof input.email !== 'undefined') user_dt.email = input.email
     if (typeof input.role !== 'undefined') user_dt.role = input.role
     if (typeof input.poin !== 'undefined') user_dt.poin = input.poin
     if (Object.keys(facebook).length > 0) user_dt.facebook = facebook
@@ -147,6 +162,7 @@ const updateUser = {
         if (typeof input.fb_photo !== 'undefined') facebook.photo = input.fb_photo
         if (typeof input.github_user !== 'undefined') github.user = input.github_user
         if (typeof input.descr !== 'undefined') user.descr = input.descr
+        if (typeof input.email !== 'undefined') user.email = input.email
         if (typeof input.role !== 'undefined') user.role = input.role
         if (typeof input.poin !== 'undefined') user.poin = input.poin
         if (Object.keys(facebook).length > 0) user.facebook = facebook
@@ -178,6 +194,7 @@ const deleteUser = {
   })
 }
 
+//ini achievement history yg kepake HAHAHAHHA
 const addAchievementHistory = {
   type: AchievementHistoryType,
   args: {
@@ -193,20 +210,26 @@ const addAchievementHistory = {
       else if (user === null) reject({errors:{message: "User not found"}})
       else {
         try {
-
-          let n_achievementHistory = new AchievementHistory({
-            _user: user._id,
-            _achievement: input._achievement
-          })
-          let _achievement = ''
-          n_achievementHistory.save((err, s_achievementHistory) => {
+          Achievement.findById(input._achievement, (err,acv) => {
             if (err) reject(err)
+            else if (acv === null)  reject({errors:{message: "Achievement not found"}})
+            else {
+              let n_achievementHistory = new AchievementHistory({
+                _user: user._id,
+                _achievement: input._achievement
+              })
 
-            _achievement = s_achievementHistory._id
-            user.achievementHistory = user.achievementHistory || []
-            user.achievementHistory.push(_achievement)
-            user.save((err,a_user)=> err? reject(err): resolve(s_achievementHistory))
+              n_achievementHistory.save((err, s_achievementHistory) => {
+                if (err) reject(err)
+
+                user.poin += acv.poin
+                user.achievementHistory = user.achievementHistory || []
+                user.achievementHistory.push(s_achievementHistory._id)
+                user.save((err,a_user)=> err? reject(err): resolve(s_achievementHistory))
+              })
+            }
           })
+
         } catch(ex) {console.log('kita masuk ex');console.log(ex)}
       }
     })
@@ -243,8 +266,6 @@ const useReward = {
             } catch(ex) {console.log(ex)}
           }
         })
-
-
       }
     })
   })
@@ -259,5 +280,5 @@ module.exports = {
   deleteUser,
   addAchievementHistory,
   useReward,
-  GithubRepositoryType
+  GithubRepositoryType,
 }

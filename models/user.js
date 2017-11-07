@@ -34,20 +34,23 @@ let userSchema = new Schema({
     count: {type: Number, default: 0},
   },
   descr: String,
+  email: String,
   poin: {type: Number, default: 0},
   event: [{type:Schema.Types.ObjectId, ref:'Event'}],
   achievementHistories: [ {type: Schema.Types.ObjectId, ref: 'AchievementHistory'}],
+  join_meetup: {type: Number, default: 0},
+  join_hackathon: {type: Number, default: 0},
   createdDate: {type: Date, default: Date.now},
   role: {type:String, default:"member"}
 })
-
-userSchema.statics.findAchievementHistories = function(id) {
-  return this.findById(id)
-    .populate('achievementHistories')
-    .then(user => {
-      return user.achievementHistories
-    })
-}
+//
+// userSchema.statics.findAchievementHistories = function(id) {
+//   return this.findById(id)
+//     .populate('achievementHistories')
+//     .then(user => {
+//       return user.achievementHistories
+//     })
+// }
 
 let User = mongoose.model('User', userSchema)
 module.exports = {User, AchievementHistory}

@@ -55,7 +55,7 @@ const insertGithub = {
                         pushDate: sorted_repo[i].pushed_at
                       })
 
-                    if (old_repo < curr_repo || user.repository.name !== github_user) {
+                    if (old_repo < curr_repo || user.github.user !== github_user) {
                       try {
                         await Poin.findOne({tipe: 'github'},
                         (err,poin) => {
@@ -63,9 +63,7 @@ const insertGithub = {
                             user.poin = user.poin + poin.poin
                           }
                         })
-                      } catch(ex) {
-                        console.log(ex)
-                      }
+                      } catch(ex) { console.log(ex) }
                     }
                   }
                   user.github.count = curr_repo
