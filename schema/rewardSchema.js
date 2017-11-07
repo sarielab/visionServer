@@ -73,7 +73,8 @@ const createReward = {
       image: input.image,
       isActive: input.isActive
     })
-    n_reward.save((err, s_reward) => err? reject(err.errors) : s_reward)
+    console.log(n_reward)
+    n_reward.save((err, s_reward) => err? reject(err.errors) : resolve(s_reward))
   })
 }
 

@@ -8,15 +8,16 @@ let eventSchema = new Schema({
   },
   tipe: {
     type: String,
+    lowercase:true,
     enum: {
-      values: ['Hackathon', 'Meetup'],
+      values: ['hackathon', 'meetup'],
       message: `{PATH} should be [Hackathon | Meetup]`
     }
   },
   location: {
-    lat: string,
-    lng: string,
-    name: string
+    lat: String,
+    lng: String,
+    name: String
   },
   url: String,
   date: {
@@ -27,7 +28,9 @@ let eventSchema = new Schema({
   poin: {type: Number, default: 0},
   participant: [{type: Schema.Types.ObjectId, ref: 'User'}],
   _organizer: {type: Schema.Types.ObjectId, ref: 'User'},
-  approved: {type: Boolean, default: false}
+  approved: {type: Number, default: -1},
+  name:{type:String},
+  decr:{type:String}
 })
 
 let Event = mongoose.model('Event', eventSchema)

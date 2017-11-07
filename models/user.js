@@ -9,7 +9,6 @@ const Schema = mongoose.Schema
 */
 
 let achievementHistorySchema = new Schema({
-  _id: { type: String },
   _user: {type: Schema.Types.ObjectId, ref: 'User' },
   _achievement: {type: Schema.Types.ObjectId, ref: 'Achievement' },
   createdDate: { type:Date, default: Date.now }
@@ -32,11 +31,14 @@ let userSchema = new Schema({
         pushDate: {type: Date, default: Date.now}
       }
     ],
-    count: {type: Number, default: 0}
+    count: {type: Number, default: 0},
   },
   descr: String,
   poin: {type: Number, default: 0},
-  achievementHistories: [ {type: Schema.Types.ObjectId, ref: 'AchievementHistory'}]
+  event: [{type:Schema.Types.ObjectId, ref:'Event'}],
+  achievementHistories: [ {type: Schema.Types.ObjectId, ref: 'AchievementHistory'}],
+  createdDate: {type: Date, default: Date.now},
+  role: {type:String, default:"member"}
 })
 
 userSchema.statics.findAchievementHistories = function(id) {

@@ -9,8 +9,8 @@ let poinSchema = new Schema({
     type: String,
     lowercase: true,
     enum: {
-      values: ['hackathon', 'meetup'],
-      message: `{PATH} should be [Hackathon | Meetup]`
+      values: ['hackathon', 'meetup', 'github'],
+      message: `{PATH} should be [Hackathon | Meetup | Github]`
     }
   }
 })

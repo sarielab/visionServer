@@ -115,8 +115,7 @@ const deleteAchievement = {
     const {id} = args
     Achievement.findById(id, (err, achievement) => {
       if (err) reject(err)
-      else
-        achievement.remove((err, d_achievement)=> err? reject(err) : resolve(d_achievement) )
+      else achievement.remove((err, d_achievement)=> err? reject(err) : resolve(d_achievement) )
     })
   })
 }

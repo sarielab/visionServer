@@ -1,4 +1,4 @@
-const AchievementHistory = require('../models/user')
+const {AchievementHistory} = require('../../models/user')
 
 const {
   GraphQLObjectType,
@@ -23,8 +23,8 @@ const AchievementHistoryType = new GraphQLObjectType({
 const AchievementHistoryInputType = new GraphQLInputObjectType({
   name: 'AchievementHistoryInputType',
   fields: {
-    _user: {type: GraphQLID},
-    _achievement: {type: GraphQLID}
+    _user: {type: new GraphQLNonNull(GraphQLID)},
+    _achievement: {type:  new GraphQLNonNull(GraphQLID)}
   }
 })
 
@@ -66,10 +66,10 @@ const createAchievementHistory = {
   resolve: (obj, args) => new Promise((resolve, reject) => {
     const {input} = args
     let n_achievementHistory = new AchievementHistory({
-      _user: {type: GraphQLID},
-      _achievement: {type: GraphQLID}
+      _user: input._user,
+      _achievement: input._achievement
     })
-    n_achievementHistory.save((err, s_achievementHistory) => err? reject(err.errors) : resolve(s_achievementHistory))
+    n_achievementHistory.save((err, s_achievementHistory) => err? reject(err) : resolve(s_achievementHistory))
   })
 }
 
@@ -113,8 +113,10 @@ const deleteAchievementHistory = {
 
 module.exports = {
   AchievementHistoryType,
+  AchievementHistoryInputType,
   achievementHistory,
   achievementHistories,
+  //ini sebenernya cuma dipake buat seeding
   createAchievementHistory,
   updateAchievementHistory,
   deleteAchievementHistory
