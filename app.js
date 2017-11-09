@@ -7,9 +7,12 @@ const cors = require('cors')
 const graphQLHTTP = require('express-graphql')
 const { buildSchema } = require('graphql')
 
+
 const appSchema = require('./schema/schema')
 const cron = require('./cron/index')
 const port = process.env.PORT || 4000
+const expressPlayground = require('graphql-playground-middleware-express').default
+
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
@@ -21,6 +24,7 @@ app.use('/graphql', graphQLHTTP (req => ({
 })))
 
 app.use('/cron', cron.init)
+app.use('/playground', expressPlayground({ endpoint: '/graphql' }))
 
 let env = app.settings.env || 'dev'
 

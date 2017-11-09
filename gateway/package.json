@@ -19,7 +19,6 @@
     "express": "^4.16.2",
     "express-graphql": "^0.6.11",
     "graphql": "^0.11.7",
-    "graphql-playground-middleware-express": "^1.1.2",
     "kue": "^0.11.6",
     "moment": "https://registry.npmjs.org/moment/-/moment-2.19.1.tgz",
     "mongoose": "^4.12.6",
