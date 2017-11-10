@@ -35,7 +35,7 @@ const EventType = new GraphQLObjectType({
     },
     location: {
       type: new GraphQLObjectType({
-        name: "LocaionType",
+        name: "LocationType",
         fields: {
           lat: {type: GraphQLString},
           lng: {type: GraphQLString},
@@ -46,7 +46,7 @@ const EventType = new GraphQLObjectType({
     url: {type: GraphQLString},
     date: {
       type: new GraphQLObjectType({
-        name: "LocationType",
+        name: "DateType",
         fields: {
           join_start: {type: GraphQLString},
           join_end: {type: GraphQLString},

@@ -60,7 +60,7 @@ const insertGithub = () => {
       }).catch(err => {console.log('mamam tuh error'); console.log(err)})
       //taredit
       //komen karena kita ga mau dia stop
-      this.stop()
+      // this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -119,7 +119,7 @@ const blastEvent = () => {
       console.log('WTF')
       //taredit
       //komen karena kita ga mau dia stop
-      this.stop()
+      // this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -172,7 +172,7 @@ const remindEvent = () => {
       }).catch(ex => {console.log('mamam tuh error'); console.log(ex)})
       //taredit
       //komen karena kita ga mau dia stop
-      this.stop()
+      // this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -206,7 +206,7 @@ const approvalEvent = () => {
       }).catch(ex => {console.log('mamam tuh error'); console.log(ex)})
       //taredit
       //komen karena kita ga mau dia stop
-      this.stop()
+      // this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -273,7 +273,7 @@ const createAchievementHistory = () => {
       }).catch(ex => {console.log('mamam tuh error'); console.log(ex)})
       //taredit
       //komen karena kita ga mau dia stop
-      this.stop()
+      // this.stop()
     },
     () => {},
     true, /*start the job right now*/
