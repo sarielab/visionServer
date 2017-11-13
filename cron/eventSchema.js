@@ -186,13 +186,15 @@ const joinEvent = {
     participant: {name:'participant', type: new GraphQLNonNull(GraphQLID)}
   },
   resolve: (obj, args) => new Promise((resolve, reject) => {
-    // let smsContent = `Hi Coders! Thank You for joining event`
-    // sendMessage('085813372797', smsContent)
+    console.log(args)
 
     const {id, participant} = args
-    Event.findOne({_id:id, approved:1}, (err, event) => {
+    //, approved:1
+    Event.findOne({_id:id}, (err, event) => {
+      console.log('============================================1')
+      console.log(err)
       if (err) reject(err)
-      else if (event === null)reject({errors:[{"message": "Event hasnt been approved"}]})
+      else if (event === null)reject({errors:{"message": "Event hasnt been approved"}})
       else {
         event.participant = event.participant || []
         event.participant.push(participant)
@@ -303,7 +305,8 @@ const deleteEvent = {
     const {id} = args
     Event.findById(id, (err, event) => {
       if (err) reject(err)
-      else event.remove((err, d_event)=> err? reject(err) : resolve(d_event) )
+      else if(event !== null) event.remove((err, d_event)=> err? reject(err) : resolve(d_event) )
+      else reject({err: "no data"})
     })
   })
 }

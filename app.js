@@ -9,7 +9,7 @@ const { buildSchema } = require('graphql')
 
 
 const appSchema = require('./schema/schema')
-const cron = require('./cron/index')
+// const cron = require('./cron/index')
 const port = process.env.PORT || 4000
 const expressPlayground = require('graphql-playground-middleware-express').default
 
@@ -23,10 +23,10 @@ app.use('/graphql', graphQLHTTP (req => ({
   graphiql: true
 })))
 
-app.use('/cron', cron.init)
+// app.use('/cron', cron.init)
 app.use('/playground', expressPlayground({ endpoint: '/graphql' }))
 
-let env = app.settings.env || 'dev'
+let env = app.settings.env || 'prod'
 
 let db_config = {
   dev: 'mongodb://localhost/vision',

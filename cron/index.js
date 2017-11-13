@@ -3,12 +3,12 @@ require('dotenv').config()
 const https = require('https')
 const nodemailer = require('nodemailer')
 const cronJob = require('cron').CronJob
-const kue = require('kue')
+// const kue = require('kue')
 const {graphql} = require('graphql')
 const appSchema = require('../schema/schema')
 const {sendMessage} = require('../mainAPI/main')
 
-const queue = kue.createQueue()
+// const queue = kue.createQueue()
 
 const query = str => {return graphql(appSchema, str) }
 const transporter = nodemailer.createTransport({
@@ -19,21 +19,32 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-const createJOB = (jobname,priority='low') => {
-  let job =
-    queue.create(jobname)
-    .priority(priority)
-    .attempts(5)
-    .save(err => console.log(err? err : job.id))
-
-  job.on('complete', res => console.log(`complete\n${res}`))
-  job.on('failed', err => console.log(err) );
-}
+// const createJOB = (jobname,priority='low') => {
+//   let job =
+//     queue.create(jobname)
+//     .priority(priority)
+//     .attempts(5)
+//     .save(err => console.log(err? err : job.id))
+//
+//   job.on('complete', res => console.log(`complete\n${res}`))
+//   job.on('failed', err => console.log(err) );
+// }
 //taredit
 //hardcode tanggal
 //jam cron belum seragam
+
+
+// Seconds: 0-59
+// Minutes: 0-59
+// Hours: 0-23
+// Day of Month: 1-31
+// Months: 0-11
+// Day of Week: 0-6
+
+
 const insertGithub = () => {
-  let blastEvent = new cronJob('* * 19 0 0 *' ,
+  //tiap jam
+  let blastEvent = new cronJob('0 0 * * * *' ,
     function() {
       query(`
         {
@@ -60,7 +71,7 @@ const insertGithub = () => {
       }).catch(err => {console.log('mamam tuh error'); console.log(err)})
       //taredit
       //komen karena kita ga mau dia stop
-      // this.stop()
+      this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -69,7 +80,7 @@ const insertGithub = () => {
 }
 // pas join date start
 const blastEvent = () => {
-  let blastEvent = new cronJob('* * 19 0 0 *' ,
+  let blastEvent = new cronJob('0 0 19 * * *' ,
     function() {
       //cari event
       let currDate = new Date()
@@ -119,7 +130,7 @@ const blastEvent = () => {
       console.log('WTF')
       //taredit
       //komen karena kita ga mau dia stop
-      // this.stop()
+      this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -128,7 +139,7 @@ const blastEvent = () => {
 }
 // pas hari event
 const remindEvent = () => {
-  let remindEvent = new cronJob('* * 19 0 0 *' ,
+  let remindEvent = new cronJob('0 0 * * * *' ,
     function() {
       //cari event
       let currDate = new Date()
@@ -172,7 +183,7 @@ const remindEvent = () => {
       }).catch(ex => {console.log('mamam tuh error'); console.log(ex)})
       //taredit
       //komen karena kita ga mau dia stop
-      // this.stop()
+      this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -180,8 +191,15 @@ const remindEvent = () => {
   )
 }
 const approvalEvent = () => {
-  let approvalEvent = new cronJob('* * 19 0 0 *' ,
+//   Seconds: 0-59
+// Minutes: 0-59
+// Hours: 0-23
+// Day of Month: 1-31
+// Months: 0-11
+// Day of Week: 0-6
+  let approvalEvent = new cronJob('* * * * *  *' ,
     function() {
+      console.log('approval')
       query(`
         {
           users(role:"admin"){email}
@@ -206,7 +224,7 @@ const approvalEvent = () => {
       }).catch(ex => {console.log('mamam tuh error'); console.log(ex)})
       //taredit
       //komen karena kita ga mau dia stop
-      // this.stop()
+      this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -273,7 +291,7 @@ const createAchievementHistory = () => {
       }).catch(ex => {console.log('mamam tuh error'); console.log(ex)})
       //taredit
       //komen karena kita ga mau dia stop
-      // this.stop()
+      this.stop()
     },
     () => {},
     true, /*start the job right now*/
@@ -282,19 +300,21 @@ const createAchievementHistory = () => {
 }
 
 const sendEmail = (mailOptions) => {
-  createJOB('sendEmail','critical')
-  queue.process('sendEmail',(job,done)=>{
+  // createJOB('sendEmail','critical')
+  // queue.process('sendEmail',(job,done)=>{
     transporter.sendMail(mailOptions, (err, info) => {
-      err ? done(err) : done()
+      console.log(err? err : info)
+      // err ? done(err) : done()
     })
-  })
+  // })
 }
 
 const sendSMS = (phone, content) => {
-  createJOB('SMS','critical')
-  queue.process('SMS',(job,done)=>{
-    sendMessage(phone,content, done)
-  })
+  // createJOB('SMS','critical')
+  // queue.process('SMS',(job,done)=>{
+    sendMessage(phone,content)
+    // done()
+  // })
 }
 
 const init = () => {
@@ -306,5 +326,6 @@ const init = () => {
 }
 
 module.exports = {
-  init
+  init,
+  sendEmail
 }

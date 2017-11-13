@@ -28,7 +28,8 @@ const getToken = () => {
   })
 }
 
-const sendMessage = async (phone, content, done) => {
+const sendMessage = async (phone, content) => {
+  console.log('send Msg')
     let res = await getToken()
     let message = {
       method: 'POST',
@@ -48,11 +49,12 @@ const sendMessage = async (phone, content, done) => {
     }
 
     await request(message, function (error, response, body) {
+      console.log(error)
       body = JSON.parse(body)
       if (body.status !== 'success') console.log('fail to send message')
     })
 
-    done()
+    // done()
 
 }
 
